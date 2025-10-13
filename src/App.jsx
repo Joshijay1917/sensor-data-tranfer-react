@@ -7,6 +7,15 @@ function App() {
   const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
   const [isSupported, setIsSupported] = useState(true);
 
+  useEffect(() => {
+    if (navigator.secureContext) {
+      console.log("✅ Context is secure. Sensor APIs should be available.");
+    } else {
+      console.error("❌ Context is NOT secure. This is the problem.");
+      console.log("Current location:", window.location.href);
+    }
+  }, []);
+  
   // Function to request permission and start sensors
   const startSensors = () => {
     // Check for HTTPS context
