@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
 export const Store = createContext()
@@ -19,21 +19,44 @@ export function StoreProvider ({ children }) {
         y: 0,
         z: 0
     })
+    const socketRef = useRef(null);
+    // This ref will hold a "live" copy of your data
+    const dataRef = useRef({ acceleData, gyroData });
 
     useEffect(() => {
-        setStatus("Connecting....")
-      const socket = io("https://sensor-data-backend-unity.onrender.com")
+      dataRef.current = { acceleData, gyroData };
+    }, [acceleData, gyroData]);
 
-      const interval = setInterval(() => {
-          setStatus("Sending Data...")
-        socket.emit("sensors",{acceleData, gyroData})
-      }, 500);
+    useEffect(() => {
+  setStatus('Connecting....');
+  const socket = io('https://sensor-data-backend-unity.onrender.com');
+  socketRef.current = socket;
 
-      return () => {
-        clearInterval(interval)
-        socket.disconnect()
-    }
-    }, [])
+  let intervalId; // To hold the interval ID
+
+  socket.on('connect', () => {
+    setStatus('Connected');
+
+    // Start sending data only after we are connected
+    intervalId = setInterval(() => {
+      // The interval callback ALWAYS reads the LATEST data from the ref
+      socket.emit('sensors', dataRef.current);
+      setStatus('Sending data...');
+    }, 500);
+  });
+
+  socket.on('disconnect', () => {
+    setStatus('Disconnected');
+    // Important: Stop the interval if we get disconnected
+    clearInterval(intervalId);
+  });
+
+  // The cleanup function runs when the component is unmounted
+  return () => {
+    clearInterval(intervalId);
+    socket.disconnect();
+  };
+}, []);
     
 
     const values = {
