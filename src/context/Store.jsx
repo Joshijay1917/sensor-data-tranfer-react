@@ -20,7 +20,7 @@ export function StoreProvider ({ children }) {
     })
 
     useEffect(() => {
-      const socket = io("http://localhost:3000")
+      const socket = io("https://sensor-data-backend-unity.onrender.com")
 
       const interval = setInterval(() => {
         socket.emit("sensors",{acceleData, gyroData})
