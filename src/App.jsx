@@ -89,8 +89,8 @@ function App() {
         Start Sensors
       </button>
 
-      {!setAccelSupport && <p className="error">Cannot connect to Accelerometer.</p>}
-      {!setGyroSupport && <p className="error">Cannot connect to GyroScope.</p>}
+      {!accelSupport && <p className="error">Cannot connect to Accelerometer.</p>}
+      {!gyroSupport && <p className="error">Cannot connect to GyroScope.</p>}
 
       <div className="sensor-grid">
         <div className="card">
