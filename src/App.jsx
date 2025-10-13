@@ -68,13 +68,13 @@ function App() {
         });
       });
        gyroscope.addEventListener("error", (event) => {
+         setGyroSupport(false)
         console.error("Gyroscope error:", event.error.name, event.error.message);
-        setGyroSupport(false)
       });
       gyroscope.start();
     } catch (error) {
+      setGyroSupport(false)
         console.error("Gyroscope could not be initialized:", error);
-        setGyroSupport(false)
     }
   };
 
