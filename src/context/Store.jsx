@@ -24,7 +24,7 @@ export function StoreProvider ({ children }) {
 
       const interval = setInterval(() => {
         socket.emit("sensors",{acceleData, gyroData})
-      }, 5000);
+      }, 500);
 
       return () => {
         clearInterval(interval)
