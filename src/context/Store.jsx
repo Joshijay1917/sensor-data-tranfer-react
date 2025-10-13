@@ -8,6 +8,7 @@ export const getStoreData = () => {
 }
 
 export function StoreProvider ({ children }) {
+    const [status, setStatus] = useState(null);
     const [acceleData, setacceleData] = useState({
         x: 0,
         y: 0,
@@ -20,9 +21,11 @@ export function StoreProvider ({ children }) {
     })
 
     useEffect(() => {
+        setStatus("Connecting....")
       const socket = io("https://sensor-data-backend-unity.onrender.com")
 
       const interval = setInterval(() => {
+          setStatus("Sending Data...")
         socket.emit("sensors",{acceleData, gyroData})
       }, 500);
 
@@ -34,8 +37,10 @@ export function StoreProvider ({ children }) {
     
 
     const values = {
+        status,
         setacceleData,
-        setGyroData
+        setGyroData,
+        setStatus
     }
 
     return (
