@@ -5,7 +5,8 @@ function App() {
   // State to hold sensor data
   const [accelData, setAccelData] = useState({ x: 0, y: 0, z: 0 });
   const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
-  const [isSupported, setIsSupported] = useState(true);
+  const [accelSupport, setAccelSupport] = useState(true)
+  const [gyroSupport, setGyroSupport] = useState(true)
 
   // useEffect(() => {
   //   if (navigator.secureContext) {
@@ -36,15 +37,16 @@ function App() {
         });
       });
       accelerometer.addEventListener("error", (event) => {
+        setAccelSupport(false)
         if (event.error.name === "NotAllowedError") {
           alert("Permission to access sensor was denied.");
         } else if (event.error.name === "NotReadableError") {
           alert("Cannot connect to the sensor.");
         }
-        setIsSupported(false);
       });
       accelerometer.start();
     } catch (error) {
+      setAccelSupport(false)
         if (error.name === "SecurityError") {
             alert("Sensor construction was blocked by a feature policy.");
         } else if (error.name === "ReferenceError") {
@@ -52,7 +54,6 @@ function App() {
         } else {
             alert(error);
         }
-        setIsSupported(false);
     }
 
 
@@ -68,12 +69,12 @@ function App() {
       });
        gyroscope.addEventListener("error", (event) => {
         console.error("Gyroscope error:", event.error.name, event.error.message);
-        setIsSupported(false);
+        setGyroSupport(false)
       });
       gyroscope.start();
     } catch (error) {
         console.error("Gyroscope could not be initialized:", error);
-        setIsSupported(false);
+        setGyroSupport(false)
     }
   };
 
@@ -88,7 +89,8 @@ function App() {
         Start Sensors
       </button>
 
-      {!isSupported && <p className="error">Your browser or device does not support the required Sensor APIs, or permission was denied.</p>}
+      {!setAccelSupport && <p className="error">Cannot connect to Accelerometer.</p>}
+      {!setGyroSupport && <p className="error">Cannot connect to GyroScope.</p>}
 
       <div className="sensor-grid">
         <div className="card">
