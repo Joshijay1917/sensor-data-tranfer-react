@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { getStoreData } from './context/Store';
 
 function App() {
   // State to hold sensor data
@@ -7,25 +8,9 @@ function App() {
   const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
   const [accelSupport, setAccelSupport] = useState(true)
   const [gyroSupport, setGyroSupport] = useState(true)
+  const store = getStoreData()
 
-  // useEffect(() => {
-  //   if (navigator.secureContext) {
-  //     console.log("✅ Context is secure. Sensor APIs should be available.");
-  //   } else {
-  //     console.error("❌ Context is NOT secure. This is the problem.");
-  //     console.log("Current location:", window.location.href);
-  //   }
-  // }, []);
-
-  // Function to request permission and start sensors
   const startSensors = () => {
-    // Check for HTTPS context
-    // if (!navigator.secureContext) {
-    //   alert("Sensor APIs require a secure (HTTPS) connection.");
-    //   setIsSupported(false);
-    //   return;
-    // }
-
     // --- Accelerometer ---
     try {
       const accelerometer = new Accelerometer({ frequency: 60 });
@@ -35,6 +20,11 @@ function App() {
           y: accelerometer.y,
           z: accelerometer.z,
         });
+        store.setacceleData({
+          x: accelerometer.x,
+          y: accelerometer.y,
+          z: accelerometer.z,
+        })
       });
       accelerometer.addEventListener("error", (event) => {
         setAccelSupport(false)
@@ -66,6 +56,11 @@ function App() {
           y: gyroscope.y,
           z: gyroscope.z,
         });
+        store.setGyroData({
+          x: gyroscope.x,
+          y: gyroscope.y,
+          z: gyroscope.z,
+        })
       });
        gyroscope.addEventListener("error", (event) => {
          setGyroSupport(false)
