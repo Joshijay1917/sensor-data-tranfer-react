@@ -42,7 +42,7 @@ export function StoreProvider ({ children }) {
       // The interval callback ALWAYS reads the LATEST data from the ref
       socket.emit('sensors', dataRef.current);
       setStatus('Sending data...');
-    }, 500);
+    }, 50);
   });
 
   socket.on('disconnect', () => {
